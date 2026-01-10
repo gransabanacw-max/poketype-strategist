@@ -1,7 +1,6 @@
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { USER_POKEMON_LIST, TYPE_COLORS, TYPE_CHART } from './constants.js';
-import { ElementType } from './types.js';
+import { USER_POKEMON_LIST, ELEMENT_TYPE, TYPE_COLORS, TYPE_CHART } from './constants.js';
 
 const GenderIcon = ({ gender, className = "w-4 h-4" }) => {
   if (gender === 'Male') {
@@ -50,7 +49,7 @@ const PokemonModal = ({ pokemon, onClose }) => {
       veryWeak: []
     };
 
-    Object.values(ElementType).forEach(targetType => {
+    Object.values(ELEMENT_TYPE).forEach(targetType => {
       let offensiveMax = 0;
       pokemon.types.forEach(pType => {
         const mult = TYPE_CHART[pType]?.[targetType] ?? 1;
@@ -125,8 +124,8 @@ const PokemonModal = ({ pokemon, onClose }) => {
         React.createElement('div', null,
           React.createElement('p', { className: 'text-[10px] uppercase font-bold text-gray-600 mb-2' }, 'Ability'),
           React.createElement('span', { 
-            className: 'bg-gray-100 text-gray-700 px-3 py-1 rounded-xl text-sm font-bold border border-gray-200 block w-fit' 
-          }, pokemon.ability || 'Unknown Ability')
+            className: 'bg-gray-100 text-gray-700 px-3 py-1 rounded-xl text-xs font-bold border border-gray-200 block w-fit uppercase' 
+          }, pokemon.ability || 'UNKNOWN')
         ),
 
         React.createElement('div', null,
@@ -135,7 +134,7 @@ const PokemonModal = ({ pokemon, onClose }) => {
             pokemon.tms && pokemon.tms.length > 0 ? 
               pokemon.tms.map(tm => React.createElement('span', { 
                 key: tm, 
-                className: 'bg-gray-50 text-gray-600 px-2 py-1 rounded-lg text-xs font-bold border border-gray-200' 
+                className: 'bg-gray-50 text-gray-600 px-2 py-1 rounded-lg text-xs font-bold border border-gray-200 uppercase' 
               }, tm)) :
               React.createElement('p', { className: 'text-gray-400 italic text-xs' }, 'No TMs registered.')
           )
@@ -146,18 +145,18 @@ const PokemonModal = ({ pokemon, onClose }) => {
           React.createElement('h3', { className: 'text-sm font-black text-gray-900 uppercase tracking-widest' }, 'Tactical Matchups'),
           
           [
-            { label: 'Very Strong Against', key: 'veryStrong', color: 'text-green-600' },
-            { label: 'Strong Against', key: 'strong', color: 'text-blue-600' },
-            { label: 'Neutral', key: 'neutral', color: 'text-gray-500' },
-            { label: 'Weak Against', key: 'weak', color: 'text-orange-600' },
-            { label: 'Very Weak Against', key: 'veryWeak', color: 'text-red-600' }
+            { label: 'Very Strong Against', key: 'veryStrong' },
+            { label: 'Strong Against', key: 'strong' },
+            { label: 'Neutral', key: 'neutral' },
+            { label: 'Weak Against', key: 'weak' },
+            { label: 'Very Weak Against', key: 'veryWeak' }
           ].map(section => (
             performance[section.key].length > 0 && React.createElement('div', { key: section.key },
-              React.createElement('p', { className: `text-[10px] uppercase font-bold mb-2 ${section.color}` }, section.label),
+              React.createElement('p', { className: `text-[10px] uppercase font-bold mb-2 text-gray-600` }, section.label),
               React.createElement('div', { className: 'flex flex-wrap gap-1.5' },
                 performance[section.key].map(type => React.createElement('span', {
                   key: type,
-                  className: `text-[9px] font-bold uppercase px-2 py-0.5 rounded shadow-sm border border-black/5 ${TYPE_COLORS[type]}`
+                  className: `text-xs font-bold uppercase px-2 py-0.5 rounded shadow-sm border border-black/5 ${TYPE_COLORS[type]}`
                 }, type))
               )
             )
@@ -288,7 +287,7 @@ const App = () => {
         React.createElement('div', { className: 'bg-white lg:rounded-2xl lg:shadow-sm p-4 md:p-6 lg:border border-gray-100' },
           React.createElement('h2', { className: 'text-lg font-bold mb-4 text-gray-900 border-l-4 border-blue-500 pl-3' }, 'Opponent type'),
           React.createElement('div', { className: 'grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-2' },
-            Object.values(ElementType).map((type) => 
+            Object.values(ELEMENT_TYPE).map((type) => 
               React.createElement('button', {
                 key: type,
                 onClick: () => getSuggestions(type),
@@ -310,7 +309,7 @@ const App = () => {
                 onChange: (e) => setRosterFilter(e.target.value)
               }, 
                 React.createElement('option', { value: 'All' }, 'Filter'),
-                Object.values(ElementType).map(type => React.createElement('option', { key: type, value: type }, type))
+                Object.values(ELEMENT_TYPE).map(type => React.createElement('option', { key: type, value: type }, type))
               ),
               React.createElement('button', {
                 onClick: toggleSearch,
