@@ -129,7 +129,7 @@ const PokemonModal = ({ pokemon, onClose }) => {
         ),
 
         React.createElement('div', null,
-          React.createElement('p', { className: 'text-[10px] uppercase font-bold text-gray-600 mb-2' }, 'TMs'),
+          React.createElement('p', { className: 'text-[10px] font-bold text-gray-600 mb-2' }, 'TMs'),
           React.createElement('div', { className: 'flex flex-wrap gap-2' },
             pokemon.tms && pokemon.tms.length > 0 ? 
               pokemon.tms.map(tm => React.createElement('span', { 
