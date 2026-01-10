@@ -1,33 +1,12 @@
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { USER_POKEMON_LIST, TYPE_COLORS, TYPE_CHART } from './constants';
 import { ElementType, Suggestion } from './types';
-
-const CACHE_KEY = 'poke_strategist_cache';
 
 const App: React.FC = () => {
   const [selectedType, setSelectedType] = useState<ElementType | null>(null);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
-  const [cache, setCache] = useState<Record<string, Suggestion[]>>({});
-
-  useEffect(() => {
-    const savedCache = localStorage.getItem(CACHE_KEY);
-    if (savedCache) {
-      try {
-        setCache(JSON.parse(savedCache));
-      } catch (e) {
-        console.error("Failed to load cache", e);
-      }
-    }
-  }, []);
-
-  const clearCache = () => {
-    localStorage.removeItem(CACHE_KEY);
-    setCache({});
-    setSuggestions([]);
-    setSelectedType(null);
-  };
 
   const calculateBestMatches = (targetType: ElementType): Suggestion[] => {
     const EXCLUSIONS = ["Mr Mime", "Gliscor"];
@@ -50,7 +29,7 @@ const App: React.FC = () => {
         }
 
         // 2. Defensive Check: How hard does the target hit US?
-        // For dual types, effectiveness is multiplicative (e.g. 0.5 * 0.5 = 0.25)
+        // Multiplicative for dual types
         p.types.forEach(pType => {
           const mult = TYPE_CHART[targetType]?.[pType] ?? 1;
           defensiveMult *= mult;
@@ -62,10 +41,6 @@ const App: React.FC = () => {
         }
 
         // Calculate a 1-5 rating based on these factors
-        // 5 = Excellent (Immune or Super Effective + Resistance)
-        // 4 = Very Good (Super Effective or Strong Resistance)
-        // 3 = Good (Resistance or neutral with offensive threat)
-        // 2 = Decent (Neutral or minor advantage)
         let rating = 1;
         if (defensiveMult === 0) rating = 5;
         else if (defensiveMult <= 0.25) rating = 5;
@@ -78,10 +53,10 @@ const App: React.FC = () => {
           pokemon: p.name,
           reasoning: reasons.length > 0 ? reasons.join('. ') : "Neutral tactical position.",
           rating,
-          sortVal: (2 - defensiveMult) + (offensiveMax - 1) // Higher is better
+          sortVal: (2 - defensiveMult) + (offensiveMax - 1)
         };
       })
-      .filter(s => s.rating >= 3) // Only show the truly good counters
+      .filter(s => s.rating >= 3)
       .sort((a, b) => (b as any).sortVal - (a as any).sortVal)
       .map(({ pokemon, reasoning, rating }) => ({ pokemon, reasoning, rating }));
   };
@@ -90,32 +65,20 @@ const App: React.FC = () => {
     setSelectedType(targetType);
     setLoading(true);
 
-    // Fast local calculation
+    // Minor delay to show feedback to the user
     setTimeout(() => {
       const results = calculateBestMatches(targetType);
       setSuggestions(results);
-      
-      const newCache = { ...cache, [targetType]: results };
-      setCache(newCache);
-      localStorage.setItem(CACHE_KEY, JSON.stringify(newCache));
       setLoading(false);
-    }, 200);
-  }, [cache]);
+    }, 150);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-pokemon-red text-white py-6 shadow-lg">
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">PokeType Strategist</h1>
-            <p className="text-red-100 opacity-90">Instant Tactical Analysis</p>
-          </div>
-          <button 
-            onClick={clearCache}
-            className="text-xs bg-white/20 hover:bg-white/30 border border-white/30 px-3 py-1.5 rounded-full transition-colors flex items-center gap-2"
-          >
-            Clear Cache
-          </button>
+        <div className="container mx-auto px-4">
+          <h1 className="text-3xl font-bold tracking-tight">PokeType Strategist</h1>
+          <p className="text-red-100 opacity-90">Instant Local Tactical Analysis</p>
         </div>
       </header>
 
@@ -164,7 +127,7 @@ const App: React.FC = () => {
           {!selectedType ? (
             <div className="h-full min-h-[400px] flex flex-col items-center justify-center bg-white rounded-3xl border-4 border-dashed border-gray-200 p-12 text-center text-gray-400">
               <h3 className="text-xl font-medium">No Target Selected</h3>
-              <p>Select an opponent element type to calculate the best counters from your team.</p>
+              <p>Select an opponent element type on the left to view optimal counters from your team.</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -174,7 +137,7 @@ const App: React.FC = () => {
 
               {loading ? (
                 <div className="h-64 flex flex-col items-center justify-center space-y-4 bg-white rounded-3xl shadow-sm border border-gray-100">
-                  <p className="text-lg font-bold text-gray-500 animate-pulse">Consulting Chart...</p>
+                  <p className="text-lg font-bold text-gray-500 animate-pulse">Calculating matchups...</p>
                 </div>
               ) : (
                 <div className="grid gap-4">
@@ -204,7 +167,7 @@ const App: React.FC = () => {
                   ))}
                   {suggestions.length === 0 && (
                     <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
-                      <p className="text-gray-500 italic">No team members have a significant strategic advantage.</p>
+                      <p className="text-gray-500 italic">No significant advantages found for this type in your current roster.</p>
                     </div>
                   )}
                 </div>
@@ -216,7 +179,7 @@ const App: React.FC = () => {
 
       <footer className="bg-gray-100 py-8 border-t border-gray-200">
         <div className="container mx-auto px-4 text-center text-gray-500 text-sm">
-          <p>© 2024 Pokemon Strategist • 100% Offline Table Accuracy</p>
+          <p>© 2024 Pokemon Strategist • Hardcoded Table Logic</p>
         </div>
       </footer>
     </div>
