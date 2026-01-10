@@ -309,7 +309,7 @@ const App = () => {
                 value: rosterFilter,
                 onChange: (e) => setRosterFilter(e.target.value)
               }, 
-                React.createElement('option', { value: 'All' }, 'Filter'),
+                React.createElement('option', { value: 'All' }, 'All types'),
                 Object.values(ELEMENT_TYPE).map(type => React.createElement('option', { key: type, value: type }, type))
               ),
               React.createElement('button', {
