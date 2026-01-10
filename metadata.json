@@ -1,0 +1,5 @@
+{
+  "name": "PokeType Strategist",
+  "description": "An interactive tool to find which of your Pokémon are best suited to counter a specific elemental type using Gemini AI and a custom team list.",
+  "requestFramePermissions": []
+}
