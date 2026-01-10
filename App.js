@@ -1,6 +1,7 @@
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { USER_POKEMON_LIST, ELEMENT_TYPE, TYPE_COLORS, TYPE_CHART } from './constants.js';
+import { ELEMENT_TYPE, TYPE_COLORS, TYPE_CHART } from './constants.js';
+import { TEAM } from './team.js';
 
 const GenderIcon = ({ gender, className = "w-4 h-4" }) => {
   if (gender === 'Male') {
@@ -189,7 +190,7 @@ const App = () => {
   }, [activePokemon]);
 
   const calculateBestMatches = (targetType) => {
-    return USER_POKEMON_LIST
+    return TEAM
       .map(p => {
         let offensiveMax = 1;
         let defensiveMult = 1;
@@ -257,7 +258,7 @@ const App = () => {
   };
 
   const filteredRoster = useMemo(() => {
-    return USER_POKEMON_LIST.filter(p => {
+    return TEAM.filter(p => {
       const matchesType = rosterFilter === 'All' || p.types.includes(rosterFilter);
       const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesType && matchesSearch;
