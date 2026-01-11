@@ -302,7 +302,10 @@ const App = () => {
         ),
         React.createElement('div', { className: 'bg-white lg:rounded-2xl lg:shadow-sm p-4 md:p-6 lg:border border-gray-100' },
           React.createElement('div', { className: 'flex justify-between items-center mb-4 gap-2' },
-            React.createElement('h2', { className: 'text-lg font-bold text-gray-900 flex-grow border-l-4 border-red-500 pl-3' }, 'Your team'),
+            React.createElement('h2', { className: 'text-lg font-bold text-gray-900 flex-grow border-l-4 border-red-500 pl-3 flex items-center gap-2' },
+              'Your team',
+              React.createElement('span', { className: 'inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold text-white bg-black rounded-full' }, String(TEAM.length))
+            ),
             React.createElement('div', { className: 'flex items-center gap-1' },
               React.createElement('select', {
                 className: 'text-[11px] border border-gray-200 rounded-lg px-2 py-1 outline-none focus:ring-1 focus:ring-blue-500 bg-gray-50 text-black font-semibold',
