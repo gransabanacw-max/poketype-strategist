@@ -128,6 +128,14 @@ export const TEAM = [
     tms: ["Fissure", "Epicenter"]
   },
   {
+    name: "Salamence",
+    types: ["Dragon", "Flying"],
+    level: 130,
+    gender: "Female",
+    ability: "Moxie",
+    tms: ["Dragon Storm", "Reflect"]
+  },
+  {
     name: "Shedinja",
     types: ["Bug", "Ghost"],
     level: 130,
